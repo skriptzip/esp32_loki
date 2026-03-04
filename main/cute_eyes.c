@@ -119,10 +119,12 @@ static void create_eye_parts(eye_parts_t *eye, lv_obj_t *root, int16_t cx, int16
     lv_obj_set_size(eye->white, eye_w, eye_h);
     lv_obj_set_pos(eye->white, cx - s->eye_rx, cy - s->eye_ry);
     lv_obj_set_style_radius(eye->white, LV_RADIUS_CIRCLE, 0);
+    lv_obj_clear_flag(eye->white, LV_OBJ_FLAG_CLICKABLE);
     style_eye_white(eye->white);
 
     eye->blush = lv_obj_create(eye->white);
     lv_obj_remove_style_all(eye->blush);
+    lv_obj_clear_flag(eye->blush, LV_OBJ_FLAG_CLICKABLE);
     lv_obj_set_size(eye->blush, (int32_t)(eye_w * 0.72f), (int32_t)(eye_h * 0.34f));
     lv_obj_set_style_radius(eye->blush, LV_RADIUS_CIRCLE, 0);
     lv_obj_set_style_bg_color(eye->blush, lv_color_hex(0xFF788C), 0);
@@ -131,6 +133,7 @@ static void create_eye_parts(eye_parts_t *eye, lv_obj_t *root, int16_t cx, int16
 
     eye->shadow = lv_obj_create(eye->white);
     lv_obj_remove_style_all(eye->shadow);
+    lv_obj_clear_flag(eye->shadow, LV_OBJ_FLAG_CLICKABLE);
     lv_obj_set_size(eye->shadow, eye_w, (int32_t)(eye_h * 0.46f));
     lv_obj_set_pos(eye->shadow, 0, 0);
     lv_obj_set_style_bg_color(eye->shadow, lv_color_hex(0x0A0A1E), 0);
@@ -138,20 +141,26 @@ static void create_eye_parts(eye_parts_t *eye, lv_obj_t *root, int16_t cx, int16
     lv_obj_set_style_radius(eye->shadow, LV_RADIUS_CIRCLE, 0);
 
     eye->iris_outer = create_circle(eye->white, s->iris_r * 2, lv_color_hex(0x1A7A2A), LV_OPA_COVER);
+    lv_obj_clear_flag(eye->iris_outer, LV_OBJ_FLAG_CLICKABLE);
     lv_obj_set_style_border_width(eye->iris_outer, 2, 0);
     lv_obj_set_style_border_color(eye->iris_outer, lv_color_hex(0x0D2A5E), 0);
 
     eye->iris_inner = create_circle(eye->white, (int32_t)(s->iris_r * 1.35f), lv_color_hex(0x4DCC60), (lv_opa_t)220);
+    lv_obj_clear_flag(eye->iris_inner, LV_OBJ_FLAG_CLICKABLE);
 
     eye->pupil = create_circle(eye->white, s->pupil_r * 2, lv_color_hex(0x080810), LV_OPA_COVER);
+    lv_obj_clear_flag(eye->pupil, LV_OBJ_FLAG_CLICKABLE);
     lv_obj_set_style_bg_grad_color(eye->pupil, lv_color_hex(0x1A1A30), 0);
     lv_obj_set_style_bg_grad_dir(eye->pupil, LV_GRAD_DIR_VER, 0);
 
     eye->shine_big = create_circle(eye->white, s->shine_r1 * 2, lv_color_hex(0xFFFFFF), (lv_opa_t)250);
+    lv_obj_clear_flag(eye->shine_big, LV_OBJ_FLAG_CLICKABLE);
     eye->shine_small = create_circle(eye->white, s->shine_r2 * 2, lv_color_hex(0xFFFFFF), (lv_opa_t)160);
+    lv_obj_clear_flag(eye->shine_small, LV_OBJ_FLAG_CLICKABLE);
 
     eye->lid_top = lv_obj_create(root);
     lv_obj_remove_style_all(eye->lid_top);
+    lv_obj_clear_flag(eye->lid_top, LV_OBJ_FLAG_CLICKABLE);
     lv_obj_set_size(eye->lid_top, eye_w, s->eye_ry);
     lv_obj_set_style_bg_color(eye->lid_top, lv_color_hex(0x0A0A0F), 0);
     lv_obj_set_style_bg_opa(eye->lid_top, LV_OPA_COVER, 0);
@@ -159,6 +168,7 @@ static void create_eye_parts(eye_parts_t *eye, lv_obj_t *root, int16_t cx, int16
 
     eye->lid_bottom = lv_obj_create(root);
     lv_obj_remove_style_all(eye->lid_bottom);
+    lv_obj_clear_flag(eye->lid_bottom, LV_OBJ_FLAG_CLICKABLE);
     lv_obj_set_size(eye->lid_bottom, eye_w, s->eye_ry);
     lv_obj_set_style_bg_color(eye->lid_bottom, lv_color_hex(0x0A0A0F), 0);
     lv_obj_set_style_bg_opa(eye->lid_bottom, LV_OPA_COVER, 0);
