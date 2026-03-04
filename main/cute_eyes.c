@@ -10,6 +10,7 @@ typedef enum {
     EMOTION_HAPPY,
     EMOTION_CURIOUS,
     EMOTION_SLEEPY,
+    EMOTION_BOUNCY,
 } eye_emotion_t;
 
 typedef struct {
@@ -57,6 +58,7 @@ typedef struct {
     float squint;
     float lash_lift;
     float pupil_scale;
+    float vertical_bounce;
 } cute_eyes_t;
 
 static cute_eyes_t eyes_state = {0};
@@ -74,7 +76,7 @@ static uint32_t random_blink_delay(void)
 
 static eye_emotion_t random_emotion(void)
 {
-    int pick = rand() % 6;
+    int pick = rand() % 7;
     if (pick <= 2) {
         return EMOTION_NEUTRAL;
     }
@@ -84,7 +86,10 @@ static eye_emotion_t random_emotion(void)
     if (pick == 4) {
         return EMOTION_CURIOUS;
     }
-    return EMOTION_SLEEPY;
+    if (pick == 5) {
+        return EMOTION_SLEEPY;
+    }
+    return EMOTION_BOUNCY;
 }
 
 static lv_obj_t *create_circle(lv_obj_t *parent, int32_t size, lv_color_t color, lv_opa_t opa)
@@ -145,7 +150,7 @@ static void create_eye_parts(eye_parts_t *eye, lv_obj_t *root, int16_t cx, int16
     lv_obj_set_style_border_width(eye->iris_outer, 2, 0);
     lv_obj_set_style_border_color(eye->iris_outer, lv_color_hex(0x0D2A5E), 0);
 
-    eye->iris_inner = create_circle(eye->white, (int32_t)(s->iris_r * 1.35f), lv_color_hex(0x4DCC60), (lv_opa_t)220);
+    eye->iris_inner = create_circle(eye->white, (int32_t)(s->iris_r * 1.50f), lv_color_hex(0x4DCC60), (lv_opa_t)220);
     lv_obj_clear_flag(eye->iris_inner, LV_OBJ_FLAG_CLICKABLE);
 
     eye->pupil = create_circle(eye->white, s->pupil_r * 2, lv_color_hex(0x080810), LV_OPA_COVER);
@@ -273,11 +278,22 @@ static void update_emotion(uint32_t dt)
     } else if (s->emotion == EMOTION_SLEEPY) {
         target_squint = 0.38f;
         target_pupil_scale = 1.10f;
+    } else if (s->emotion == EMOTION_BOUNCY) {
+        target_pupil_scale = 0.90f;
     }
 
     s->squint += (target_squint - s->squint) * 0.10f;
     s->lash_lift += (target_lash - s->lash_lift) * 0.10f;
     s->pupil_scale += (target_pupil_scale - s->pupil_scale) * 0.12f;
+
+    // Bouncy vertical movement animation
+    if (s->emotion == EMOTION_BOUNCY) {
+        float bounce_wave = sinf((float)s->emotion_tick * 0.008f) * s->eye_ry * 0.25f;
+        s->vertical_bounce += (bounce_wave - s->vertical_bounce) * 0.15f;
+    } else {
+        s->vertical_bounce += (0.0f - s->vertical_bounce) * 0.10f;
+    }
+    s->emotion_tick += dt;
 }
 
 static void update_blink(uint32_t dt)
@@ -369,9 +385,11 @@ void cute_eyes_init(lv_obj_t *parent)
     s->blink_value = 0.0f;
     s->emotion = EMOTION_NEUTRAL;
     s->emotion_duration_ms = 2500;
+    s->emotion_tick = 0;
     s->squint = 0.0f;
     s->lash_lift = 0.0f;
     s->pupil_scale = 1.0f;
+    s->vertical_bounce = 0.0f;
     choose_new_target();
 }
 
@@ -399,11 +417,23 @@ static void cute_eyes_timer_cb(lv_timer_t *timer)
     float wobble_rx = sinf((float)s->elapsed_ms * 0.0019f + 1.2f) * s->eye_rx * 0.04f;
     float wobble_ry = cosf((float)s->elapsed_ms * 0.0027f + 0.5f) * s->eye_ry * 0.03f;
 
+    // Calculate separate bounce offsets for each eye with phase offset
+    float left_bounce = s->vertical_bounce + sinf((float)s->elapsed_ms * 0.004f + 0.6f) * s->eye_ry * 0.08f;
+    float right_bounce = s->vertical_bounce + sinf((float)s->elapsed_ms * 0.004f + 2.1f) * s->eye_ry * 0.08f;
+    int16_t left_bounce_offset = (int16_t)left_bounce;
+    int16_t right_bounce_offset = (int16_t)right_bounce;
+
     place_eye_core(&s->left, s->look_x, s->look_y, wobble_lx, wobble_ly);
     place_eye_core(&s->right, s->look_x, s->look_y, wobble_rx, wobble_ry);
 
-    place_eyelids(&s->left, s->left_cx, s->eye_cy - (int16_t)(s->lash_lift * 3.0f));
-    place_eyelids(&s->right, s->right_cx, s->eye_cy);
+    place_eyelids(&s->left, s->left_cx, s->eye_cy + left_bounce_offset - (int16_t)(s->lash_lift * 3.0f));
+    place_eyelids(&s->right, s->right_cx, s->eye_cy + right_bounce_offset);
+
+    // Apply bounce offset to eye whites
+    if (left_bounce_offset != 0 || right_bounce_offset != 0) {
+        lv_obj_set_pos(s->left.white, s->left_cx - s->eye_rx, s->eye_cy - s->eye_ry + left_bounce_offset);
+        lv_obj_set_pos(s->right.white, s->right_cx - s->eye_rx, s->eye_cy - s->eye_ry + right_bounce_offset);
+    }
 }
 
 void cute_eyes_start_animation(void)
