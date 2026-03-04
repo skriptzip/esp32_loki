@@ -150,7 +150,7 @@ static void create_eye_parts(eye_parts_t *eye, lv_obj_t *root, int16_t cx, int16
     lv_obj_set_style_border_width(eye->iris_outer, 2, 0);
     lv_obj_set_style_border_color(eye->iris_outer, lv_color_hex(0x0D2A5E), 0);
 
-    eye->iris_inner = create_circle(eye->white, (int32_t)(s->iris_r * 1.50f), lv_color_hex(0x4DCC60), (lv_opa_t)220);
+    eye->iris_inner = create_circle(eye->white, (int32_t)(s->iris_r * 1.70f), lv_color_hex(0x4DCC60), (lv_opa_t)220);
     lv_obj_clear_flag(eye->iris_inner, LV_OBJ_FLAG_CLICKABLE);
 
     eye->pupil = create_circle(eye->white, s->pupil_r * 2, lv_color_hex(0x080810), LV_OPA_COVER);
@@ -288,7 +288,7 @@ static void update_emotion(uint32_t dt)
 
     // Bouncy vertical movement animation
     if (s->emotion == EMOTION_BOUNCY) {
-        float bounce_wave = sinf((float)s->emotion_tick * 0.008f) * s->eye_ry * 0.25f;
+        float bounce_wave = sinf((float)s->emotion_tick * 0.008f) * s->eye_ry * 0.15f;
         s->vertical_bounce += (bounce_wave - s->vertical_bounce) * 0.15f;
     } else {
         s->vertical_bounce += (0.0f - s->vertical_bounce) * 0.10f;
@@ -418,8 +418,8 @@ static void cute_eyes_timer_cb(lv_timer_t *timer)
     float wobble_ry = cosf((float)s->elapsed_ms * 0.0027f + 0.5f) * s->eye_ry * 0.03f;
 
     // Calculate separate bounce offsets for each eye with phase offset
-    float left_bounce = s->vertical_bounce + sinf((float)s->elapsed_ms * 0.004f + 0.6f) * s->eye_ry * 0.08f;
-    float right_bounce = s->vertical_bounce + sinf((float)s->elapsed_ms * 0.004f + 2.1f) * s->eye_ry * 0.08f;
+    float left_bounce = s->vertical_bounce + sinf((float)s->elapsed_ms * 0.004f + 0.6f) * s->eye_ry * 0.05f;
+    float right_bounce = s->vertical_bounce + sinf((float)s->elapsed_ms * 0.004f + 2.1f) * s->eye_ry * 0.05f;
     int16_t left_bounce_offset = (int16_t)left_bounce;
     int16_t right_bounce_offset = (int16_t)right_bounce;
 
