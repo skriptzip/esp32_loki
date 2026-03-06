@@ -32,6 +32,10 @@ Main app sources:
 - ESP-IDF v5.x (project dependency: `idf: >5.0.4, !=5.1.1`)
 - Board: Waveshare ESP32-S3-Touch-AMOLED-1.43
 
+## 3D Printing Details
+
+<img src="./assets/ESP32-S3-Touch-AMOLED-1.43-details-size.jpg" height="500" style="vertical-align:middle; margin-right:8px;">
+
 Board docs:
 
 - https://www.waveshare.com/esp32-s3-touch-amoled-1.43.htm
