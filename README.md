@@ -1,3 +1,5 @@
+# <img src="./assets/loki_icon.png" height="32" style="vertical-align:middle; margin-right:8px;"/> esp32_loki
+
 ```
               ___                   ________              ___  __                ___         
              |\  \                 |\   __  \            |\  \|\  \             |\  \        
@@ -10,7 +12,27 @@
     
                               Language Operated Knowledge Interface
 ```
-Waveshare ESP32-S3 1.43inch AMOLED Round Touch Display Development Board
-https://www.waveshare.com/esp32-s3-touch-amoled-1.43.htm
 
-https://www.waveshare.com/wiki/ESP32-S3-Touch-AMOLED-1.43
+Short ESP-IDF demo project for the Waveshare ESP32-S3 1.43 inch round AMOLED touch board.
+
+## What it does
+
+- Targets `esp32s3`.
+- Initializes the SH8601 AMOLED panel over QSPI.
+- Initializes touch input.
+- Runs an LVGL animated "cute eyes" UI.
+
+Main app sources:
+
+- `main/example_qspi_with_ram.c`
+- `main/cute_eyes.c`
+
+## Requirements
+
+- ESP-IDF v5.x (project dependency: `idf: >5.0.4, !=5.1.1`)
+- Board: Waveshare ESP32-S3-Touch-AMOLED-1.43
+
+Board docs:
+
+- https://www.waveshare.com/esp32-s3-touch-amoled-1.43.htm
+- https://www.waveshare.com/wiki/ESP32-S3-Touch-AMOLED-1.43
